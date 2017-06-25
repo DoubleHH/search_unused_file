@@ -3,8 +3,8 @@
 Search unused files in Xcode folder. 找出Xcode工程文件夹下未使用的文件，用于定期清理工程。未使用包括两种，1.没添加到工程；2.添加到工程后，但没使用过。
 
 环境：脚本运行于Mac终端  
-使用工具：Terminal  
-脚本编写语言：Python + Python的额外工具包[the\_silver\_search](https://github.com/ggreer/the_silver_searcher)  
+使用工具：Terminal + + Python的额外工具包[the\_silver\_search](https://github.com/ggreer/the_silver_searcher)  
+脚本编写语言：Python   
 
 ## 准备工作
 
