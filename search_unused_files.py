@@ -9,7 +9,7 @@ from sys import argv
 import hh_print
 
 def find_all_headers(path):
-	command = 'ag -l -g "\.h$" %s' % (path)
+	command = 'ag -lg "\.h$" %s' % (path)
 	header_paths = os.popen(command).readlines()
 	hh_print.print_color_string("总共有%s个文件。" % (len(header_paths)))
 	return header_paths
@@ -20,7 +20,7 @@ def header_name_in_path(header_path):
 	return header_name
 
 def result_of_search_single_file(search_path, name):
-	command = 'ag -l %s %s' % (name, search_path)
+	command = 'ag -lw "%s" "%s"' % (name, search_path)
 	name_paths = os.popen(command).readlines()
 	name_header = name + ".h"
 	name_implementation = name + ".m"
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     	exit(0)
     search_path = argv[1]
     header_path = search_path
-    if len(argv) >= 2:
+    if len(argv) > 2:
     	header_path = argv[2]
     all_headers_path = find_all_headers(header_path)
     total_infos = search_all_files_info(search_path, all_headers_path)
