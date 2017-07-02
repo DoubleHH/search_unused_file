@@ -79,7 +79,9 @@ def print_array(array, title="Array", color="b_white"):
     print_color_string("\nPrint Array(%s, count:%d) Start:" % (title, len(array)))
     string = ""
     for value in array:
-        string = string + "\n" + ("%s" % (value))
+        if len(string) > 0:
+            string = string + "\n"
+        string = string + ("%s" % (value))
     print_color_string(string, color)
     print_color_string("\nPrint Array(%s, count:%d) End." % (title, len(array)))
 
