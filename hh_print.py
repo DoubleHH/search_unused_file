@@ -76,14 +76,14 @@ def print_error(string, index):
     print_color_string(error)
 
 def print_array(array, title="Array", color="b_white"):
-    print_color_string("\nPrint Array(%s, count:%d) Start:" % (title, len(array)))
+    print_color_string("\nPrint Array(%s, count:%d) Start:\n" % (title, len(array)), "o_white")
     string = ""
     for value in array:
         if len(string) > 0:
             string = string + "\n"
         string = string + ("%s" % (value))
     print_color_string(string, color)
-    print_color_string("\nPrint Array(%s, count:%d) End." % (title, len(array)))
+    print_color_string("\nPrint Array(%s, count:%d) End." % (title, len(array)), "o_white")
 
 def print_progress(progress, total):
     maxCount = 40
