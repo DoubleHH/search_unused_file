@@ -72,7 +72,8 @@ def find_all_classes(path):
 			classes_info.append([interface, path_from_interface_string(clean_line)])
 		else:
 			duplicate_files.append(interface)
-	hh_print.print_array(duplicate_files, "可能存在重复定义或者在文件夹内但没有拖进工程的文件", "b_red")
+	if len(duplicate_files) > 0:
+		hh_print.print_array(duplicate_files, "可能存在重复定义或者在文件夹内但没有拖进工程的文件", "b_red")
 	return classes_info
 
 def class_name_of_the_line(file_path, line_number):
@@ -82,9 +83,9 @@ def class_name_of_the_line(file_path, line_number):
 	is_in_note_block = False
 	is_in_double_note = False
 	for x in range(line_number,0,-1):
-		print ("line:" + str(x))
+		# print ("line:" + str(x))
 		single_line = lines[x].strip()
-		hh_print.print_color_string("single_line :" + single_line)
+		# hh_print.print_color_string("single_line :" + single_line)
 		if len(single_line) == 0:
 			continue
 		if single_line.endswith('*/'):
@@ -108,7 +109,7 @@ def class_name_of_the_line(file_path, line_number):
 			class_name = class_name_from_interface_string(single_line)
 		elif single_line.startswith('@implementation'):
 			class_name = class_name_from_implemetation_string(single_line)
-		print ("class_name from singleline: %s" % class_name)
+		# print ("class_name from singleline: %s" % class_name)
 		if class_name != None:
 			break
 	return [is_in_double_note, class_name]
@@ -129,7 +130,8 @@ def is_used_class(class_info, path):
 		# hh_print.print_color_string("file_path: " + file_path)
 		# hh_print.print_color_string("line_number: " + line_number)
 		# hh_print.print_color_string("code: " + code)
-		prefixs = ['/', '#import', '@interface', '@implementation', '#pragma']
+		interface_string = '@interface ' + class_name
+		prefixs = ['/', '#import', interface_string, '@implementation', '#pragma']
 		is_hit_prefix = False
 		for prefix in prefixs:
 			if code.startswith(prefix):
@@ -139,44 +141,42 @@ def is_used_class(class_info, path):
 			continue
 		name_result = class_name_of_the_line(file_path, int(line_number) - 1)
 		if name_result[0]:
-			hh_print.print_color_string("class in note: %s" % (class_name), "b_red")
+			# hh_print.print_color_string("class in note: %s" % (class_name), "b_red")
 			continue
 		class_name_for_current_line = name_result[1]
 		# hh_print.print_color_string("class_name_for_current_line : %s" % class_name_for_current_line)
 		if not class_name_for_current_line or cmp(class_name_for_current_line, class_name) != 0:
-			hh_print.print_color_string("class not match: %s, %s" % (class_name, class_name_for_current_line), "b_red")
+			# hh_print.print_color_string("class not match: %s, %s" % (class_name, class_name_for_current_line), "b_red")
 			return True
-	hh_print.print_color_string("False", "b_red")
+	# hh_print.print_color_string("False", "b_red")
 	return False
 
 if __name__ == '__main__':
     if len(argv) < 2:
     	hh_print.print_color_string("Parameters error: Usage: python %s source_path search_path" % (__file__), "b_red")
     	exit(0)
+    
     source_path = argv[1]
     if len(argv) > 2:
     	search_path = argv[2]
     else:
     	search_path = source_path
     classes = find_all_classes(source_path)
-    hh_print.print_array(classes, "所有类")
+    if len(classes) > 0:
+    	hh_print.print_array(classes, "所有类")
+    else:
+    	hh_print.print_color_string("没搜索到类的定义，请检查", "b_red")
     unused_classes = []
+    index = 1
+    print ""
     for class_ext in classes:
     	result = is_used_class(class_ext, search_path)
     	if not result:
     		unused_classes.append(class_ext)
-    hh_print.print_array(unused_classes, "所有没有被使用的类")
-    # progress = 0
-    # total = len(files)
-    # for file_path in files:
-    # 	check_single_file(file_path)
-    # 	hh_print.print_progress(progress, total)
-    # 	progress = progress + 1
-
-    # current_line = '       NSArray *itemArray = [subview valueForKeyPath:@"_viewData.item"];'
-    # group = re.match(r'.*[^A-Za-z0-9_"]_[A-Za-z0-9].*', current_line)
-    # if group == None:
-    # 	print "None..."
-    # else:
-    # 	print group.group()
+    	hh_print.print_progress(index, len(classes))
+    	index = index + 1
+    if len(unused_classes) > 0:
+    	hh_print.print_array(unused_classes, "所有很可能没有被使用的类")
+    else:
+    	hh_print.print_color_string("没有未被使用的类，666~~~", "yellow")
     
